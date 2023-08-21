@@ -34,9 +34,7 @@ public class R2dbcInitializer implements ApplicationContextInitializer<GenericAp
                 new ConnectionFactoryOptionsInitializer()
                     .initialize(
                         properties,
-                        context
-                            .getBeanProvider(R2dbcConnectionDetails.class)
-                            .getIfAvailable(),
+                        new R2dbcAutoConfiguration.PropertiesR2dbcConnectionDetails(properties),
                         () -> EmbeddedDatabaseConnection.get(context.getClassLoader())
                     )
             )
