@@ -16,7 +16,6 @@
 
 package org.springframework.fu.kofu.mongo
 
-import de.flapdoodle.embed.mongo.distribution.Version
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
@@ -25,21 +24,26 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.findById
 import org.springframework.fu.kofu.application
-import org.springframework.util.SocketUtils
+import org.testcontainers.containers.GenericContainer
 import java.time.Duration
 
-class EmbeddedMongoModuleTests {
+class MongoDslTests {
 
 	@Test
 	fun `enable mongodb embedded module with reactive support`() {
-		val port = SocketUtils.findAvailableTcpPort()
+		val mongo = object : GenericContainer<Nothing>("mongo:latest") {
+			init {
+				withExposedPorts(27017)
+			}
+		}
+		mongo.start()
+
 		val app = application {
 			beans {
 				bean<TestReactiveRepository>()
 			}
 			reactiveMongodb {
-				uri = "mongodb://localhost:$port/test"
-				embedded(Version.Main.PRODUCTION)
+				uri = "mongodb://${mongo.containerIpAddress}:${mongo.firstMappedPort}/test"
 			}
 		}
 		with(app.run()){
@@ -48,18 +52,25 @@ class EmbeddedMongoModuleTests {
 			assertEquals("foo", repository.findById("1").block(Duration.ofSeconds(3))?.name)
 			close()
 		}
+
+		mongo.stop()
 	}
 
 	@Test
-	fun `enable mongodb embedded module`() {
-		val port = SocketUtils.findAvailableTcpPort()
+	fun `enable mongodb`() {
+		val mongo = object : GenericContainer<Nothing>("mongo:latest") {
+			init {
+				withExposedPorts(27017)
+			}
+		}
+		mongo.start()
+
 		val app = application {
 			beans {
 				bean<TestRepository>()
 			}
 			mongodb() {
-				uri = "mongodb://localhost:$port/test"
-				embedded(Version.Main.PRODUCTION)
+				uri = "mongodb://${mongo.containerIpAddress}:${mongo.firstMappedPort}/test"
 			}
 		}
 		with(app.run()){
@@ -68,6 +79,8 @@ class EmbeddedMongoModuleTests {
 			assertEquals("foo", repository.findById("1")?.name)
 			close()
 		}
+
+		mongo.stop()
 	}
 }
 

@@ -29,8 +29,6 @@ abstract class AbstractMongoDsl(private val init: MongoDsl.() -> Unit) : Abstrac
 
     protected val properties = MongoProperties()
 
-    internal var embedded = false
-
     /**
      * Configure the database uri. By default set to `mongodb://localhost/test`.
      */

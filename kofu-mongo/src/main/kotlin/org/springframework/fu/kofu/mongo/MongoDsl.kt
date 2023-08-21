@@ -33,7 +33,7 @@ open class MongoDsl(private val init: MongoDsl.() -> Unit) : AbstractMongoDsl({}
     override fun initialize(context: GenericApplicationContext) {
         super.initialize(context)
         init()
-        MongoInitializer(properties, embedded).initialize(context)
+        MongoInitializer(properties).initialize(context)
         MongoDataInitializer(properties).initialize(context)
     }
 

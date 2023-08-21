@@ -31,14 +31,10 @@ public class MongoInitializer implements ApplicationContextInitializer<GenericAp
 
     private final MongoProperties properties;
 
-    private final boolean embeddedServer;
-
     public MongoInitializer(
-        MongoProperties properties,
-        boolean embeddedServer
+        MongoProperties properties
     ) {
         this.properties = properties;
-        this.embeddedServer = embeddedServer;
     }
 
     @Override
