@@ -24,6 +24,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-jdbc")
     testRuntimeOnly("io.r2dbc:r2dbc-h2")
     testRuntimeOnly("io.r2dbc:r2dbc-postgresql:0.8.4.RELEASE")
-    testRuntimeOnly("org.postgresql:postgresql:42.2.18")
-    testRuntimeOnly("mysql:mysql-connector-java:8.0.22")
+    testRuntimeOnly("org.postgresql:postgresql:42.2.27")
+    testRuntimeOnly("mysql:mysql-connector-java:8.0.28")
 }
