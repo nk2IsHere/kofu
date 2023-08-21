@@ -6,12 +6,13 @@ plugins {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot")
+	implementation("org.springframework.boot:spring-boot-starter-logging")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	implementation(project(":autoconfigure-adapter-context"))
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
+	implementation(project(":autoconfigure-adapter-context"))
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testImplementation("org.springframework:spring-test")

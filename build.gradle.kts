@@ -35,6 +35,7 @@ allprojects {
 	tasks.withType<KotlinCompile> {
 		kotlinOptions {
 			freeCompilerArgs += "-Xjsr305=strict"
+			freeCompilerArgs += "-Xextended-compiler-checks"
 			jvmTarget = "17"
 		}
 	}

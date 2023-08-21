@@ -31,7 +31,10 @@ public class DataSourceConfiguration_GenericInitializer implements ApplicationCo
                 DataSource.class,
                 () -> context
                     .getBean(DataSourceConfiguration.Generic.class)
-                    .dataSource(this.dataSourceProperties)
+                    .dataSource(
+                        this.dataSourceProperties,
+                        new PropertiesJdbcConnectionDetails(this.dataSourceProperties)
+                    )
             );
         }
     }
