@@ -34,4 +34,6 @@ dependencies {
 
     testImplementation(project(":kofu-templating-mustache"))
     testImplementation(project(":kofu-templating-thymeleaf"))
+
+    testImplementation("org.springframework.boot:spring-boot-starter-jetty")
 }

@@ -29,7 +29,7 @@ import org.springframework.test.web.reactive.server.expectBody
 class ThymeleafDslTests {
 
     @Test
-    fun `Create and request a Mustache view`() {
+    fun `Create and request a Thymeleaf view`() {
         val app = reactiveWebApplication {
             webFlux {
                 port = 0

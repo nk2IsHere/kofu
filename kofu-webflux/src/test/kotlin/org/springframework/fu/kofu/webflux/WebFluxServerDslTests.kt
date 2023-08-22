@@ -90,7 +90,7 @@ class WebFluxServerDslTests {
 			webFlux {
 				port = 0
 				router {
-					engine = tomcat()
+					engine = jetty()
 					GET("/foo") { noContent().build() }
 				}
 			}

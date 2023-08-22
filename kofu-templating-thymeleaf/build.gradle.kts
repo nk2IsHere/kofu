@@ -9,13 +9,11 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation(project(":kofu"))
-    implementation(project(":kofu-webflux"))
-    implementation(project(":kofu-webmvc"))
-    implementation(project(":autoconfigure-adapter-web-reactive"))
-    implementation(project(":autoconfigure-adapter-web-servlet"))
     implementation(project(":autoconfigure-adapter-thymeleaf"))
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.springframework:spring-test")
