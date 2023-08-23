@@ -30,8 +30,8 @@ import org.springframework.security.web.csrf.CsrfTokenRepository
 import org.springframework.security.web.csrf.DefaultCsrfToken
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.Duration
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 
 /**
@@ -99,7 +99,7 @@ class WebMvcSecurityDslTests {
 
 					http {
 						authorizeRequests {
-							authorize("/public-view", permitAll)
+							authorize("/public-view",  permitAll)
 							authorize("/view", hasRole("USER"))
 							authorize("/public-post", permitAll)
 						}
