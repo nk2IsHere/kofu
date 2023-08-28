@@ -1,6 +1,7 @@
 package org.springframework.fu.kofu.jdbc
 
 import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
@@ -21,7 +22,7 @@ class JdbcDslTests {
 
         with(app.run()) {
             val jdbcTemplate = getBean<JdbcTemplate>()
-            Assert.assertNotNull(jdbcTemplate)
+            Assertions.assertNotNull(jdbcTemplate)
             close()
         }
     }
@@ -43,7 +44,6 @@ class JdbcDslTests {
                 url = "jdbc:postgresql://${pg.containerIpAddress}:${pg.firstMappedPort}/db"
                 username = "jo"
                 password = "pwd"
-                schema = listOf("qsfqf")
             }
             beans {
                 bean<JdbcRepository>()

@@ -22,8 +22,6 @@ import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafReactiveWebInit
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafServletWebInitializer
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.fu.kofu.AbstractDsl
-import org.springframework.fu.kofu.webflux.WebFluxServerDsl
-import org.springframework.fu.kofu.webmvc.WebMvcServerDsl
 
 /**
  * Kofu DSL for Thymeleaf template engine.

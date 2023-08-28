@@ -30,8 +30,8 @@ import org.springframework.security.web.csrf.CsrfTokenRepository
 import org.springframework.security.web.csrf.DefaultCsrfToken
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.Duration
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 
 /**
@@ -99,7 +99,7 @@ class WebMvcSecurityDslTests {
 
 					http {
 						authorizeRequests {
-							authorize("/public-view", permitAll)
+							authorize("/public-view",  permitAll)
 							authorize("/view", hasRole("USER"))
 							authorize("/public-post", permitAll)
 						}
@@ -122,14 +122,14 @@ class WebMvcSecurityDslTests {
 	}
 
 	private fun userDetailsService() =
-			InMemoryUserDetailsManager(
-					@Suppress("DEPRECATION")
-					User.withDefaultPasswordEncoder()
-							.username(usernameTest)
-							.password(passwordTest)
-							.roles("USER")
-							.build()
-			)
+		InMemoryUserDetailsManager(
+			@Suppress("DEPRECATION")
+			User.withDefaultPasswordEncoder()
+				.username(usernameTest)
+				.password(passwordTest)
+				.roles("USER")
+				.build()
+		)
 
 	private fun csrfTokenRepository() = object : CsrfTokenRepository {
 
@@ -159,10 +159,11 @@ class WebMvcSecurityDslTests {
 		commonTests(client)
 
 		// Verify post succeed with csrf header
-		client
-				.post().uri("/public-post")
-				.header(csrfHeaderTest, csrfTokenTest)
-				.exchange()
-				.expectStatus().is2xxSuccessful
+		client.post()
+			.uri("/public-post")
+			.header(csrfHeaderTest, csrfTokenTest)
+			.exchange()
+			.expectStatus()
+			.is2xxSuccessful
 	}
 }

@@ -33,6 +33,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.security:spring-security-test")
 
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("org.springframework.boot:spring-boot-starter-undertow")
+    testImplementation("org.springframework.boot:spring-boot-starter-jetty")
+
     testImplementation(project(":kofu-templating-mustache"))
     testImplementation(project(":kofu-templating-thymeleaf"))
 }

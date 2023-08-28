@@ -5,7 +5,7 @@ import org.elasticsearch.rest.RestStatus
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.getBean
-import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient
+import org.springframework.data.elasticsearch.client.erhlc.ReactiveElasticsearchClient
 import org.springframework.fu.kofu.application
 import org.testcontainers.containers.GenericContainer
 import reactor.test.StepVerifier

@@ -31,7 +31,7 @@ import org.springframework.context.support.GenericApplicationContext
  * @see application
  * @author Sebastien Deleuze
  */
-open class ApplicationDsl internal constructor(private val dsl: ApplicationDsl.() -> Unit) : ConfigurationDsl({}) {
+open class ApplicationDsl(private val dsl: ApplicationDsl.() -> Unit) : ConfigurationDsl({}) {
 
 	override fun initialize(context: GenericApplicationContext) {
 		super.initialize(context)

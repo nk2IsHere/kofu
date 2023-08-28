@@ -32,7 +32,10 @@ public class DataSourceConfiguration_HikariInitializer implements ApplicationCon
                 HikariDataSource.class,
                 () -> context
                     .getBean(DataSourceConfiguration.Hikari.class)
-                    .dataSource(this.dataSourceProperties),
+                    .dataSource(
+                        this.dataSourceProperties,
+                        new PropertiesJdbcConnectionDetails(this.dataSourceProperties)
+                    ),
                 def -> {
                     def.setFactoryMethodName("dataSource");
                     def.setFactoryBeanName(DataSourceConfiguration.Hikari.class.getName());
