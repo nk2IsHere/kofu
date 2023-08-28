@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -22,10 +24,11 @@ public class HttpSecurityInitializer implements ApplicationContextInitializer<Ge
     private static final String BEAN_NAME_PREFIX = "org.springframework.security.config.annotation.web.configuration.HttpSecurityConfiguration.";
     static final String HTTPSECURITY_BEAN_NAME = BEAN_NAME_PREFIX + "httpSecurity";
 
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsPasswordService userDetailsPasswordService;
+
+    private AuthenticationManager authenticationManager;
 
     public HttpSecurityInitializer(
         AuthenticationManager authenticationManager,
@@ -51,28 +54,25 @@ public class HttpSecurityInitializer implements ApplicationContextInitializer<Ge
 
         configuration.setAuthenticationConfiguration(authenticationConfiguration);
 
-        if (authenticationManager != null) {
-            context.registerBean(
-                AuthenticationManager.class,
-                authenticationManager
-            );
-        } else {
-            // build authenticationManager, otherwise HttpSecurityConfiguration will throw NPE
+        if(authenticationManager == null) {
+            // Build authenticationManager, otherwise HttpSecurityConfiguration will throw NPE
             DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
             authProvider.setUserDetailsService(userDetailsService);
             authProvider.setUserDetailsPasswordService(userDetailsPasswordService);
 
-            if (passwordEncoder != null) {
-                authProvider.setPasswordEncoder(passwordEncoder);
-            } else {
-                authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
-            }
+            authProvider.setPasswordEncoder(Objects.requireNonNullElseGet(
+                passwordEncoder,
+                PasswordEncoderFactories::createDelegatingPasswordEncoder
+            ));
 
-            context.registerBean(
-                AuthenticationManager.class,
-                new ProviderManager(authProvider)
-            );
+            authenticationManager = new ProviderManager(authProvider);
         }
+
+        context.registerBean(
+            AuthenticationManagerBuilder.class,
+            () -> new AuthenticationManagerBuilder(context.getBean(ObjectPostProcessor.class))
+                .parentAuthenticationManager(authenticationManager)
+        );
 
         Supplier<HttpSecurity> httpSecuritySupplier = () -> {
             configuration.setObjectPostProcessor(context.getBean(ObjectPostProcessor.class));

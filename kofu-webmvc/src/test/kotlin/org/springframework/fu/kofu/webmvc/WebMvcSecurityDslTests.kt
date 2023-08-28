@@ -122,14 +122,14 @@ class WebMvcSecurityDslTests {
 	}
 
 	private fun userDetailsService() =
-			InMemoryUserDetailsManager(
-					@Suppress("DEPRECATION")
-					User.withDefaultPasswordEncoder()
-							.username(usernameTest)
-							.password(passwordTest)
-							.roles("USER")
-							.build()
-			)
+		InMemoryUserDetailsManager(
+			@Suppress("DEPRECATION")
+			User.withDefaultPasswordEncoder()
+				.username(usernameTest)
+				.password(passwordTest)
+				.roles("USER")
+				.build()
+		)
 
 	private fun csrfTokenRepository() = object : CsrfTokenRepository {
 
@@ -159,10 +159,11 @@ class WebMvcSecurityDslTests {
 		commonTests(client)
 
 		// Verify post succeed with csrf header
-		client
-				.post().uri("/public-post")
-				.header(csrfHeaderTest, csrfTokenTest)
-				.exchange()
-				.expectStatus().is2xxSuccessful
+		client.post()
+			.uri("/public-post")
+			.header(csrfHeaderTest, csrfTokenTest)
+			.exchange()
+			.expectStatus()
+			.is2xxSuccessful
 	}
 }
