@@ -14,6 +14,23 @@ Any help bringing Kofu up to a working level will be absolutely appreciated.
 
 PS: For now though this project will stay in a single man's playground state.
 
+== Usage
+
+In `build.gradle` add:
+
+[source]
+----
+repositories {
+    maven("https://repo.pool.kot.tools/artifactory/libs-release")
+}
+
+// <...>
+
+dependencies {
+    implementation("org.springframework.fu:kofu:0.6.0-main+")
+}
+----
+
 == Credits
 
 Credits to:
