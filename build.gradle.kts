@@ -93,7 +93,7 @@ allprojects {
 	tasks.register<Jar>("javadocJar") {
 		dependsOn("javadoc")
 		archiveClassifier.set("javadoc")
-		from(tasks.named<Jar>("javadoc").get().destinationDirectory)
+		from(tasks.named<Javadoc>("javadoc").get().destinationDir)
 	}
 
 	artifactory {
