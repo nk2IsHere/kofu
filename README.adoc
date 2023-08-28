@@ -1,11 +1,8 @@
 == Kofu
 
-Kofu is a fork of Spring Fu project that aims to minimize the scope of original project to support only Kotlin, modularize
-and make every module as slim as possible. This project also aims to maintain the parts of Spring Fu and update them to
-support latest Spring versions.
+Kofu is a fork of Spring Fu project that aims to minimize the scope of original project to support only Kotlin, modularize and make every module as slim as possible. This project also aims to maintain the parts of Spring Fu and update them to support latest Spring versions.
 
-This project has no relation to the development work done on the original Spring Fu project. It is not intended to be used
-in production (although we do).
+This project has no relation to the development work done on the original Spring Fu project. It is not intended to be used in production.
 
 == Help needed
 

@@ -1,12 +1,14 @@
 import org.gradle.api.Project
 import java.io.ByteArrayOutputStream
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.8.22" apply false
 	id("org.springframework.boot") apply false
 	id("io.spring.dependency-management") version "1.1.2"
 	id("maven-publish")
+	id("com.jfrog.artifactory") version "5.+"
 }
 
 fun Project.runCommand(command: String): String {
@@ -42,7 +44,9 @@ fun Project.gitVersionPostfix(): String {
 
 allprojects {
 	apply {
+		plugin("java-library")
 		plugin("maven-publish")
+		plugin("com.jfrog.artifactory")
 		plugin("io.spring.dependency-management")
 	}
 
@@ -78,9 +82,86 @@ allprojects {
 		maven("https://repo.spring.io/milestone")
 		maven("https://repo.spring.io/snapshot")
 	}
-}
 
-fun CopySpec.setExecutablePermissions() {
-	filesMatching("gradlew") { mode = 0b111101101 }
-	filesMatching("gradlew.bat") { mode = 0b110100100 }
+	tasks.register<Jar>("sourcesJar") {
+		dependsOn("classes")
+		archiveClassifier.set("sources")
+
+		from(project.the<SourceSetContainer>()["main"].allSource)
+	}
+
+	tasks.register<Jar>("javadocJar") {
+		dependsOn("javadoc")
+		archiveClassifier.set("javadoc")
+		from(tasks.named<Jar>("javadoc").get().destinationDirectory)
+	}
+
+	artifactory {
+		clientConfig.isIncludeEnvVars = true
+
+		val artifactoryContextUrl: String = findProperty("artifactoryContextUrl")
+			?.toString()
+			?: error(
+				"Artifactory Context Url must not be null. " +
+				"Check artifactoryContextUrl in gradle.properties or environment"
+			)
+
+		val artifactoryRepoPublish: String = findProperty("artifactoryRepoPublish")
+			?.toString()
+			?: error(
+				"Artifactory Repo Publish must not be null. " +
+				"Check artifactoryRepoPublish in gradle.properties or environment"
+			)
+
+		val artifactoryUser: String = findProperty("artifactoryUser")
+			?.toString()
+			?: error(
+				"Artifactory User must not be null. " +
+				"Check artifactoryUser in gradle.properties or environment"
+			)
+
+		val artifactoryPassword: String = findProperty("artifactoryPassword")
+			?.toString()
+			?: error(
+				"Artifactory Password must not be null. " +
+				"Check artifactoryPassword in gradle.properties or environment"
+			)
+
+		setContextUrl(artifactoryContextUrl)
+		publish {
+			repository {
+				repoKey = artifactoryRepoPublish
+				username = artifactoryUser
+				password = artifactoryPassword
+
+				ivy {
+					setIvyLayout("[organization]/[module]/ivy-[revision].xml")
+					artifactLayout = "[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
+					mavenCompatible = true
+				}
+			}
+
+			defaults {
+				publications("mavenJava")
+				setPublishArtifacts(true)
+				setPublishPom(true)
+				setPublishIvy(true)
+			}
+		}
+	}
+
+	publishing {
+		publications {
+			create<MavenPublication>("mavenJava") {
+				groupId = project.group.toString()
+				version = project.version.toString()
+				artifactId = project.name
+
+				from(components["java"])
+				artifact(tasks.named("sourcesJar"))
+				artifact(tasks.named("javadocJar"))
+				artifact("$buildDir/libs/${project.name}-${project.version}.jar")
+			}
+		}
+	}
 }
