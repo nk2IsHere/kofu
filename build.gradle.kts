@@ -42,6 +42,16 @@ fun Project.gitVersionPostfix(): String {
 	return sanitizeVersion("-$branch-$commit")
 }
 
+fun String.kebabToLowerCamelCase(): String {
+	return "-[a-zA-Z]"
+		.toRegex()
+		.replace(this) {
+			it.value
+				.replace("-","")
+				.toUpperCase()
+		}
+}
+
 allprojects {
 	apply {
 		plugin("java-library")
@@ -142,7 +152,7 @@ allprojects {
 			}
 
 			defaults {
-				publications("mavenJava")
+				publications(project.name.kebabToLowerCamelCase())
 				setPublishArtifacts(true)
 				setPublishPom(true)
 				setPublishIvy(true)
@@ -152,10 +162,19 @@ allprojects {
 
 	publishing {
 		publications {
-			create<MavenPublication>("mavenJava") {
+			create<MavenPublication>(project.name.kebabToLowerCamelCase()) {
 				groupId = project.group.toString()
 				version = project.version.toString()
 				artifactId = project.name
+
+				versionMapping {
+					usage("java-api") {
+						fromResolutionOf("runtimeClasspath")
+					}
+					usage("java-runtime") {
+						fromResolutionResult()
+					}
+				}
 
 				from(components["java"])
 				artifact(tasks.named("sourcesJar"))
