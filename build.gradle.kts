@@ -1,3 +1,5 @@
+import org.gradle.api.Project
+import java.io.ByteArrayOutputStream
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -7,13 +9,44 @@ plugins {
 	id("maven-publish")
 }
 
+fun Project.runCommand(command: String): String {
+	val stdout = ByteArrayOutputStream()
+	project.exec {
+		commandLine = command.split(" ")
+		standardOutput = stdout
+	}
+
+	return stdout
+		.toString()
+		.trim()
+}
+
+fun sanitizeVersion(branch: String): String {
+	return branch
+		.replace(Regex("[^A-Za-z0-9.-]+"), "-")
+		.replace(Regex("-+"), "-")
+}
+
+fun Project.gitVersionPostfix(): String {
+	val isGitRepo = runCatching { runCommand("git rev-parse --is-inside-work-tree") }
+		.getOrElse { "" } == "true"
+
+	if (!isGitRepo) {
+		return "-nogit"
+	}
+
+	val branch = runCommand("git rev-parse --abbrev-ref HEAD")
+	val commit = runCommand("git rev-parse --short HEAD")
+	return sanitizeVersion("-$branch-$commit")
+}
+
 allprojects {
 	apply {
 		plugin("maven-publish")
 		plugin("io.spring.dependency-management")
 	}
 
-	version = "0.6.0-SNAPSHOT"
+	version = "0.6.0" + gitVersionPostfix()
 	group = "org.springframework.fu"
 
 	dependencyManagement {
