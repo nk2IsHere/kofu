@@ -108,7 +108,7 @@ allprojects {
 	}
 
 	artifactory {
-		clientConfig.isIncludeEnvVars = true
+		clientConfig.isIncludeEnvVars = false
 
 		val artifactoryContextUrl: String = findProperty("artifactoryContextUrl")
 			?.toString()
