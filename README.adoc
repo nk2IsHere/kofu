@@ -27,7 +27,7 @@ repositories {
 // <...>
 
 dependencies {
-    implementation("org.springframework.fu:kofu:0.6.0-main+")
+    implementation("org.springframework.fu:kofu:0.6.0-main-855")
 }
 ----
 
