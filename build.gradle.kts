@@ -38,8 +38,8 @@ fun Project.gitVersionPostfix(): String {
 	}
 
 	val branch = runCommand("git rev-parse --abbrev-ref HEAD")
-	val commit = runCommand("git rev-parse --short HEAD")
-	return sanitizeVersion("-$branch-$commit")
+	val commitsCount = runCommand("git rev-list --count HEAD")
+	return sanitizeVersion("-$branch-$commitsCount")
 }
 
 fun String.kebabToLowerCamelCase(): String {
@@ -52,7 +52,7 @@ fun String.kebabToLowerCamelCase(): String {
 		}
 }
 
-allprojects {
+subprojects {
 	apply {
 		plugin("java-library")
 		plugin("maven-publish")
@@ -103,11 +103,12 @@ allprojects {
 	tasks.register<Jar>("javadocJar") {
 		dependsOn("javadoc")
 		archiveClassifier.set("javadoc")
+
 		from(tasks.named<Javadoc>("javadoc").get().destinationDir)
 	}
 
 	artifactory {
-		clientConfig.isIncludeEnvVars = true
+		clientConfig.isIncludeEnvVars = false
 
 		val artifactoryContextUrl: String = findProperty("artifactoryContextUrl")
 			?.toString()
@@ -138,24 +139,18 @@ allprojects {
 			)
 
 		setContextUrl(artifactoryContextUrl)
+
 		publish {
 			repository {
 				repoKey = artifactoryRepoPublish
 				username = artifactoryUser
 				password = artifactoryPassword
-
-				ivy {
-					setIvyLayout("[organization]/[module]/ivy-[revision].xml")
-					artifactLayout = "[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
-					mavenCompatible = true
-				}
 			}
 
 			defaults {
 				publications(project.name.kebabToLowerCamelCase())
 				setPublishArtifacts(true)
-				setPublishPom(true)
-				setPublishIvy(true)
+				isPublishBuildInfo = false
 			}
 		}
 	}
@@ -171,15 +166,15 @@ allprojects {
 					usage("java-api") {
 						fromResolutionOf("runtimeClasspath")
 					}
+
 					usage("java-runtime") {
 						fromResolutionResult()
 					}
 				}
 
-				from(components["java"])
 				artifact(tasks.named("sourcesJar"))
 				artifact(tasks.named("javadocJar"))
-				artifact("$buildDir/libs/${project.name}-${project.version}.jar")
+				from(components["java"])
 			}
 		}
 	}
