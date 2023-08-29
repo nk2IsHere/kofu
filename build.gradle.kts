@@ -38,8 +38,8 @@ fun Project.gitVersionPostfix(): String {
 	}
 
 	val branch = runCommand("git rev-parse --abbrev-ref HEAD")
-	val commit = runCommand("git rev-parse --short HEAD")
-	return sanitizeVersion("-$branch-$commit")
+	val commitsCount = runCommand("git rev-list --count HEAD")
+	return sanitizeVersion("-$branch-$commitsCount")
 }
 
 fun String.kebabToLowerCamelCase(): String {
@@ -103,6 +103,7 @@ allprojects {
 	tasks.register<Jar>("javadocJar") {
 		dependsOn("javadoc")
 		archiveClassifier.set("javadoc")
+
 		from(tasks.named<Javadoc>("javadoc").get().destinationDir)
 	}
 
@@ -171,15 +172,16 @@ allprojects {
 					usage("java-api") {
 						fromResolutionOf("runtimeClasspath")
 					}
+
 					usage("java-runtime") {
 						fromResolutionResult()
 					}
 				}
 
-				from(components["java"])
 				artifact(tasks.named("sourcesJar"))
 				artifact(tasks.named("javadocJar"))
-				artifact("$buildDir/libs/${project.name}-${project.version}.jar")
+
+				from(components["java"])
 			}
 		}
 	}
