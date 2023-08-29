@@ -52,7 +52,7 @@ fun String.kebabToLowerCamelCase(): String {
 		}
 }
 
-allprojects {
+subprojects {
 	apply {
 		plugin("java-library")
 		plugin("maven-publish")
@@ -139,24 +139,18 @@ allprojects {
 			)
 
 		setContextUrl(artifactoryContextUrl)
+
 		publish {
 			repository {
 				repoKey = artifactoryRepoPublish
 				username = artifactoryUser
 				password = artifactoryPassword
-
-				ivy {
-					setIvyLayout("[organization]/[module]/ivy-[revision].xml")
-					artifactLayout = "[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"
-					mavenCompatible = true
-				}
 			}
 
 			defaults {
 				publications(project.name.kebabToLowerCamelCase())
 				setPublishArtifacts(true)
-				setPublishPom(true)
-				setPublishIvy(true)
+				isPublishBuildInfo = false
 			}
 		}
 	}
@@ -180,7 +174,6 @@ allprojects {
 
 				artifact(tasks.named("sourcesJar"))
 				artifact(tasks.named("javadocJar"))
-
 				from(components["java"])
 			}
 		}
