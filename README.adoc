@@ -6,6 +6,7 @@ This project has no relation to the development work done on the original Spring
 
 == Help needed
 
+* kofu-elasticsearch and autoconfigure-adapter-elasticsearch are broken
 * kofu-webmvc tests fail on security
 
 This project is a derivation from the original spring-fu project with no intention to become mainline.
